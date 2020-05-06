@@ -9,7 +9,7 @@ usersRouter
 //POST to create user
   .post('/', jsonBodyParser, (req, res, next) => {
     const { pw, email, full_name } = req.body
-    for (const field of ['full_name', 'user_name', 'password']) {
+    for (const field of ['full_name', 'email', 'password']) {
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`
@@ -25,9 +25,9 @@ usersRouter
       req.app.get('db'),
       email
     )
-      .then(hasUserWithUserName => {
-        if (hasUserWithUserName)
-          return res.status(400).json({ error: `Username already taken` })
+      .then(hasUserWithEmail => {
+        if (hasUserWithEmail)
+          return res.status(400).json({ error: `Email already taken` })
 
         return UsersService.hashPassword(pw)
           .then(hashedPassword => {
