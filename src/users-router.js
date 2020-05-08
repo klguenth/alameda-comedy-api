@@ -9,7 +9,7 @@ usersRouter
 //POST to create user
   .post('/', jsonBodyParser, (req, res, next) => {
     const { pw, email, full_name } = req.body
-    for (const field of ['full_name', 'email', 'password']) {
+    for (const field of ['full_name', 'email', 'pw']) {
       if (!req.body[field])
         return res.status(400).json({
           error: `Missing '${field}' in request body`
@@ -35,7 +35,6 @@ usersRouter
               email,
               pw: hashedPassword,
               full_name,
-              date_created: 'now()',
             }
 
             return UsersService.insertUser(
