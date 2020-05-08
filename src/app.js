@@ -1,10 +1,10 @@
 require('dotenv').config()
+const { NODE_ENV, PORT, DB_URL } = require('./config');
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const helmet = require('helmet')
 const { NODE_ENV } = require('./config')
-const {CLIENT_ORIGIN} = require('./config')
 const knex = require('knex');
 
 const app = express()
@@ -15,7 +15,7 @@ const morganOption = (NODE_ENV === 'production')
 
 const db = knex({
     client: 'pg',
-    connection: DATABASE_URL,
+    connection: DB_URL,
 })
 
 app.set('db', db)
@@ -29,12 +29,6 @@ app.use('*', (req, res, next) => {
 app.get('/', (req, res) => {
     res.send('Hello, world!')
 })
-
-app.use(
-    cors({
-        origin: CLIENT_ORIGIN
-    })
-);
 
 app.use(function errorHandler(error, req, res, next) {
     let response
