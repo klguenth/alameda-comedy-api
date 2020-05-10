@@ -9,6 +9,7 @@ const usersRouter = require('./users-router');
 const authRouter = require('./auth-router');
 const comedianRouter = require('./comedian-router');
 const showRouter = require('./show-router');
+const linkRouter = require('./link-router');
 
 const app = express()
 
@@ -30,6 +31,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/comedian', comedianRouter)
 app.use('/api/show', showRouter)
+app.use('/api/link', linkRouter)
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')
