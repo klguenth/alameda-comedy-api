@@ -8,6 +8,7 @@ const knex = require('knex');
 const usersRouter = require('./users-router');
 const authRouter = require('./auth-router');
 const comedianRouter = require('./comedian-router');
+const showRouter = require('./show-router');
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.use(cors())
 app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
 app.use('/api/comedian', comedianRouter)
+app.use('/api/show', showRouter)
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')

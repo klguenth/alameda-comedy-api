@@ -23,7 +23,7 @@ const serializeShow = show => ({
 
 showRouter
     //get all shows
-    .get('/show', jsonBodyParser, (req, res, next) => {
+    .get('/', jsonBodyParser, (req, res, next) => {
         const knex = req.app.get('db')
         ShowService.getAllShows(knex)
             .then(shows => {
@@ -32,7 +32,7 @@ showRouter
             .catch(next)
     })
     //create new show
-    .post('/show', jsonBodyParser, (req, res, next) => {
+    .post('/', jsonBodyParser, (req, res, next) => {
         const newShow = req.body
         for (const [key, value] of Object.entries(newShow))
             if (value == null)
@@ -53,7 +53,7 @@ showRouter
     })
 
 showRouter
-    .all('/show/:id', (req, res, next) => {
+    .all('/:id', (req, res, next) => {
         const knex = req.app.get('db')
         ShowService.getById(
             knex,
@@ -71,13 +71,13 @@ showRouter
         .catch(next)
     })
     //retrieve show with specified id
-    .get('/show/:id', (req, res, next) => {
+    .get('/:id', (req, res, next) => {
         res.json(serializeShow(res.show))
     })
     //edit existing show
-    .patch('/show/:id', jsonBodyParser, (req, res, next) => {
+    .patch('/:id', jsonBodyParser, (req, res, next) => {
         const { title, show_date, show_time, details, notes, price_premium, price_general, capacity, comps } = req.body
-        const sightingToUpdate = { title, show_date, show_time, details, notes, price_premium, price_general, capacity, comps }
+        const showToUpdate = { title, show_date, show_time, details, notes, price_premium, price_general, capacity, comps }
 
         const numberOfValues = Object.values(showToUpdate).filter(Boolean).length
         if (numberOfValues === 0)
@@ -97,7 +97,7 @@ showRouter
         .catch(next)
     })
     //delete show of specified id
-    .delete('/show/:id', (req, res, next) => {
+    .delete('/:id', (req, res, next) => {
         ShowService.deleteShow(
             req.app.get('db'),
             req.params.id

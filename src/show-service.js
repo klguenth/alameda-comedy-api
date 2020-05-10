@@ -1,5 +1,5 @@
 const ShowService = {
-    getAllShow(knex) {
+    getAllShows(knex) {
         return knex
             .select('*')
             .from('show')
