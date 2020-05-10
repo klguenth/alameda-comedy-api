@@ -7,6 +7,7 @@ const helmet = require('helmet')
 const knex = require('knex');
 const usersRouter = require('./users-router');
 const authRouter = require('./auth-router');
+const comedianRouter = require('./comedian-router');
 
 const app = express()
 
@@ -26,6 +27,7 @@ app.use(helmet())
 app.use(cors())
 app.use('/api/users', usersRouter)
 app.use('/api/auth', authRouter)
+app.use('/api/comedian', comedianRouter)
 
 app.get('/', (req, res) => {
     res.send('Hello, world!')
