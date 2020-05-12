@@ -2,29 +2,29 @@ const LinkService = {
     getAllLinks(knex) {
         return knex
             .select('*')
-            .from('link')
+            .from('links')
     },
     getById(knex, id) {
         return knex
-            .from('link')
+            .from('links')
             .select('*')
             .where('id', id)
             .first()
     },
     deleteLink(knex, id) {
-        return knex('link')
+        return knex('links')
             .where({ id })
             .delete()
     },
     updateLink(knex, id, newItemFields) {
-        return knex('link')
+        return knex('links')
             .where({ id })
             .update(newItemFields)
     },
     insertLink(knex, newLink) {
         return knex
             .insert(newLink)
-            .into('link')
+            .into('links')
             .returning('*')
             .then(rows => rows[0])
     },
