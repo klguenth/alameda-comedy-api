@@ -17,14 +17,14 @@ const serializeLink = link => ({
 
 linkRouter
     //get all links
-    .get('/', jsonBodyParser, (req, res, next) => {
-        const knex = req.app.get('db')
-        LinkService.getAllLinks(knex)
-            .then(links => {
-                res.json(links.map(serializeLink))
-            })
-            .catch(next)
-    })
+    // .get('/', jsonBodyParser, (req, res, next) => {
+    //     const knex = req.app.get('db')
+    //     LinkService.getAllLinks(knex)
+    //         .then(links => {
+    //             res.json(links.map(serializeLink))
+    //         })
+    //         .catch(next)
+    // })
     //create new link
     .post('/', jsonBodyParser, (req, res, next) => {
         const newLink = req.body
@@ -47,9 +47,10 @@ linkRouter
     })
 
 linkRouter
-    .all('/:id', (req, res, next) => {
+    //get by comedian id
+    .all('/:comedian_id', (req, res, next) => {
         const knex = req.app.get('db')
-        LinkService.getById(
+        LinkService.getByComedianId(
             knex,
             req.params.id
         )
@@ -65,7 +66,7 @@ linkRouter
         .catch(next)
     })
     //retrieve link with specified id
-    .get('/:id', (req, res, next) => {
+    .get('/:comedian_id', (req, res, next) => {
         res.json(serializeLink(res.link))
     })
     //edit existing link

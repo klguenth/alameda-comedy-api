@@ -17,6 +17,10 @@ const ShowService = {
     //         .select('*')
     //         .where('species', species)
     // },
+
+    //TODO getNextShows
+    //get 24 shows at a time
+
     deleteShow(knex, id) {
         return knex('show')
             .where({ id })

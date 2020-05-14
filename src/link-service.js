@@ -4,11 +4,11 @@ const LinkService = {
             .select('*')
             .from('links')
     },
-    getById(knex, id) {
+    getByComedianId(knex, comedian_id) {
         return knex
             .from('links')
             .select('*')
-            .where('id', id)
+            .where('comedian_id', comedian_id)
             .first()
     },
     deleteLink(knex, id) {

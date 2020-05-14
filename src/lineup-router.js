@@ -16,14 +16,14 @@ const serializeLineup = lineup => ({
 
 lineupRouter
     //get all lineups
-    .get('/', jsonBodyParser, (req, res, next) => {
-        const knex = req.app.get('db')
-        LineupService.getAllLineups(knex)
-            .then(lineups => {
-                res.json(lineups.map(serializelineup))
-            })
-            .catch(next)
-    })
+    // .get('/', jsonBodyParser, (req, res, next) => {
+    //     const knex = req.app.get('db')
+    //     LineupService.getAllLineups(knex)
+    //         .then(lineups => {
+    //             res.json(lineups.map(serializelineup))
+    //         })
+    //         .catch(next)
+    // })
     //create new lineup
     .post('/', jsonBodyParser, (req, res, next) => {
         const newLineup = req.body

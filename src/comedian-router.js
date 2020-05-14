@@ -16,7 +16,7 @@ const serializeComedian = comedian => ({
     email: xss(comedian.email),
     bio: xss(comedian.bio),
     notes: xss(comedian.notes),
-    category: comedian.category,
+    category: xss(comedian.category),
     gender: comedian.gender,
     age: comedian.age,
     race: comedian.race,
@@ -26,7 +26,7 @@ const serializeComedian = comedian => ({
     street: xss(comedian.street),
     city: xss(comedian.city),
     st: xss(comedian.st),
-    zip: comedian.zip,
+    zip: xss(comedian.zip),
     website: xss(comedian.website),
     facebook: xss(comedian.facebook),
     twitter: xss(comedian.twitter),
@@ -119,6 +119,8 @@ comedianRouter
         })
         .catch(next)
     })
+
+//TODO write get by query option
 
 // comedianRouter
 //     .get('/species/:species', (req, res, next) => {
