@@ -154,29 +154,24 @@ function makeUsersArray() {
         )*/
     }
   
-  function cleanTables(db) {
-    return db.transaction(trx =>
-      trx.raw(
-        `TRUNCATE
-          users,
-          comedian,
-          shows,
-          lineup,
-          links,
-          credits,
-          photos
-        `
-      )
-      .then(() =>
-        Promise.all([
-          trx.raw(`ALTER SEQUENCE comedian_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
-          trx.raw(`SELECT setval('comedian_id_seq', 0)`),
-          trx.raw(`SELECT setval('users_id_seq', 0)`),
-        ])
-      )
-    )
-  }
+  // function cleanTables(db) {
+  //   return db.transaction(trx =>
+  //     trx.raw(
+  //       `TRUNCATE
+  //         users,
+  //         comedian
+  //       `
+  //     )
+  //     .then(() =>
+  //       Promise.all([
+  //         trx.raw(`ALTER SEQUENCE comedian_id_seq minvalue 0 START WITH 1`),
+  //         trx.raw(`ALTER SEQUENCE users_id_seq minvalue 0 START WITH 1`),
+  //         trx.raw(`SELECT setval('comedian_id_seq', 0)`),
+  //         trx.raw(`SELECT setval('users_id_seq', 0)`),
+  //       ])
+  //     )
+  //   )
+  // }
   
   function seedComedianTables(db, users, comedians=[]) {
     // use a transaction to group the queries and auto rollback on any failure
@@ -215,7 +210,7 @@ function makeUsersArray() {
     makeMaliciousComedian,
   
     makeComediansFixtures,
-    cleanTables,
+    // cleanTables,
     seedUsers,
     seedComedianTables,
     seedMaliciousComedian,

@@ -1,5 +1,7 @@
+require('dotenv').config()
 const app = require('../src/app.js');
 const { expect } = require('chai');
+const { TEST_DB_URL } = require('../src/config');
 const helpers = require('./test-helpers');
 const knex = require('knex');
 const express = require('express');
@@ -7,7 +9,7 @@ const bcrypt = require('bcrypt');
 const { makeComediansArray } = require('./test-helpers.js')
 
 describe('Comedian Endpoints', function() {
-    let db
+    let db;
     
     const testComedians = makeComediansArray()
     const testComediansWithId = testComedians.map((comedian, index) => {
@@ -16,16 +18,19 @@ describe('Comedian Endpoints', function() {
     })
 
     before('make knex instance', () => {
+        console.log(TEST_DB_URL, 'test db url');
         db = knex({
             client: 'pg',
-            connection: process.env.TEST_DATABASE_URL,
+            connection: TEST_DB_URL,
         })
         app.set('db', db)
     })
 
     after('disconnect from db', () => db.destroy())
 
-    before('clean the table', () =>db('comedian').truncate())
+    before(() => db.raw('TRUNCATE comedian RESTART IDENTITY CASCADE'));
+
+    // before('clean the table', () => db('comedian').truncate())
 
     afterEach('cleanup', () => db('comedian').truncate())
 
