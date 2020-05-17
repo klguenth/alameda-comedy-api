@@ -30,7 +30,7 @@ describe('Comedian Endpoints', function() {
 
     before(() => db.raw('TRUNCATE comedian RESTART IDENTITY CASCADE'));
 
-    // before('clean the table', () => db('comedian').truncate())
+    before('clean the table', () => db('comedian').truncate())
 
     afterEach('cleanup', () => db('comedian').truncate())
 
