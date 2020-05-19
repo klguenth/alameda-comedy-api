@@ -81,20 +81,35 @@ function makeUsersArray() {
 }
   
   function makeExpectedComedian(users, comedians=[]) {
-    const author = users
-      .find(user => user.id === comedian.id)
+    // const author = users
+    //   .find(user => user.id === comedian.id)
   
-    const number_of_comments = comments
-      .filter(comment => comment.article_id === article.id)
-      .length
+    // const number_of_comments = comments
+    //   .filter(comment => comment.article_id === article.id)
+    //   .length
   
     return {
-      title: sighting.title,
-      species: sighting.species,
-      brief_description: sighting.brief_description,
-      detailed_description: sighting.detailed_description,
-      sighting_date: sighting.sighting_date,
-      sighting_location: sighting.sighting_location
+      first_name: comedian.first_name,
+      last_name: comedian.last_name,
+      phone: comedian.phone,
+      email: comedian.email,
+      bio: comedian.bio,
+      notes: comedian.notes,
+      category: comedian.category,
+      gender: comedian.gender,
+      age: comedian.age,
+      race: comedian.race,
+      passed: comedian.passed,
+      clean: comedian.clean,
+      ssn: comedian.ssn,
+      street: comedian.street,
+      city: comedian.city,
+      st: comedian.st,
+      zip: comedian.zip,
+      website: comedian.website,
+      facebook: comedian.facebook,
+      twitter: comedian.twitter,
+      instagram: comedian.instagram
     }
   }
   

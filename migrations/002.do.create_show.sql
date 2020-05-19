@@ -8,5 +8,6 @@ CREATE TABLE show (
     price_premium MONEY NOT NULL,
     price_general MONEY NOT NULL,
     capacity INTEGER,
-    comps INTEGER
+    comps INTEGER,
+    tix_id INTEGER
 )

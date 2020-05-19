@@ -13,7 +13,7 @@ describe('Comedian Endpoints', function() {
     
     const testComedians = makeComediansArray()
     const testComediansWithId = testComedians.map((comedian, index) => {
-        comedian.comedian_id = index + 1
+        comedian.id = index + 1
         return comedian;
     })
 
@@ -28,11 +28,15 @@ describe('Comedian Endpoints', function() {
 
     after('disconnect from db', () => db.destroy())
 
-    before(() => db.raw('TRUNCATE comedian RESTART IDENTITY CASCADE'));
+    // before(() => db.raw('TRUNCATE lineup RESTART IDENTITY CASCADE'));
+    // before(() => db.raw('TRUNCATE links RESTART IDENTITY CASCADE'));
+    // before(() => db.raw('TRUNCATE credits RESTART IDENTITY CASCADE'));
+    // before(() => db.raw('TRUNCATE photos RESTART IDENTITY CASCADE'));
+    // before(() => db.raw('TRUNCATE comedian RESTART IDENTITY CASCADE'));
 
-    before('clean the table', () => db('comedian').truncate())
+    // before('clean the table', () => db('comedian').truncate())
 
-    afterEach('cleanup', () => db('comedian').truncate())
+    // afterEach('cleanup', () => db('comedian').truncate())
 
     describe(`GET /api/comedian`, () => {
         context(`Given no comedians`, () => {

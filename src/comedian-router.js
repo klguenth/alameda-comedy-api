@@ -38,7 +38,7 @@ comedianRouter
     .get('/', jsonBodyParser, (req, res, next) => {
         const knex = req.app.get('db')
         ComedianService.getAllComedians(knex)
-            .then(comedian => {
+            .then(comedians => {
                 res.json(comedians.map(serializeComedian))
             })
             .catch(next)
