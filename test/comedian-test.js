@@ -103,7 +103,7 @@ describe('Comedian Endpoints', function() {
                 notes: 'test notes test notes test notes',
                 category: 'open mic',
                 gender: 'female',
-                age: '25',
+                age: 25,
                 race: 'white',
                 passed: true,
                 clean: true,
@@ -124,7 +124,7 @@ describe('Comedian Endpoints', function() {
                 .expect(res => {
                     expect(res.body.first_name).to.eql(newComedian.first_name)
                     expect(res.body.last_name).to.eql(newComedian.last_name)
-                    expect(res.body.phone).to.eql(newComedian.phone)
+                    expect(res.body.phone.trim()).to.eql(newComedian.phone)
                     expect(res.body.email).to.eql(newComedian.email)
                     expect(res.body.bio).to.eql(newComedian.bio)
                     expect(res.body.notes).to.eql(newComedian.notes)
@@ -134,7 +134,7 @@ describe('Comedian Endpoints', function() {
                     expect(res.body.race).to.eql(newComedian.race)
                     expect(res.body.passed).to.eql(newComedian.passed)
                     expect(res.body.clean).to.eql(newComedian.clean)
-                    expect(res.body.ssn).to.eql(newComedian.ssn)
+                    expect(res.body.ssn.trim()).to.eql(newComedian.ssn)
                     expect(res.body.street).to.eql(newComedian.street)
                     expect(res.body.city).to.eql(newComedian.city)
                     expect(res.body.st).to.eql(newComedian.st)
