@@ -63,7 +63,7 @@ function makeUsersArray() {
             notes: 'These are test notes for Harper Noelle',
             category: 'open mic',
             gender: 'female',
-            age: '32',
+            age: 32,
             race: 'white',
             passed: true,
             clean: true,

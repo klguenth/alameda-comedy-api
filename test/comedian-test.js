@@ -28,6 +28,8 @@ describe('Comedian Endpoints', function() {
 
     after('disconnect from db', () => db.destroy())
 
+    before(() => db.raw('BEGIN; ALTER TABLE comedian DISABLE TRIGGER ALL; TRUNCATE TABLE comedian CASCADE; ALTER TABLE comedian ENABLE TRIGGER ALL; COMMIT;'))
+
     // before(() => db.raw('TRUNCATE lineup RESTART IDENTITY CASCADE'));
     // before(() => db.raw('TRUNCATE links RESTART IDENTITY CASCADE'));
     // before(() => db.raw('TRUNCATE credits RESTART IDENTITY CASCADE'));
