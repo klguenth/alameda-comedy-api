@@ -40,7 +40,7 @@ function makeUsersArray() {
             notes: 'These are test notes for John Smith',
             category: 'open mic',
             gender: 'male',
-            age: '30',
+            age: 30,
             race: 'white',
             passed: true,
             clean: true,

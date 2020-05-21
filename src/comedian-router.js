@@ -39,7 +39,7 @@ comedianRouter
         const knex = req.app.get('db')
         ComedianService.getAllComedians(knex)
             .then(comedians => {
-                if(!comedian) {
+                if(!comedians) {
                     return res.status(404).json({
                         error: { message: `Comedian doesn't exist` }
                     })
