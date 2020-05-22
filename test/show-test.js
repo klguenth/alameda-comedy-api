@@ -43,6 +43,9 @@ describe('Show Endpoints', function() {
                 return supertest(app)
                     .get('/api/show')
                     .expect(200)
+                    .expect(res => {
+                        expect(res.body.length === testShows.length)
+                    })
             })
         })
     })
