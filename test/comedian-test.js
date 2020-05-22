@@ -145,7 +145,6 @@ describe('Comedian Endpoints', function() {
                     expect(res.body.facebook).to.eql(newComedian.facebook)
                     expect(res.body.twitter).to.eql(newComedian.twitter)
                     expect(res.body.instagram).to.eql(newComedian.instagram)
-                    // expect(res.body).to.have.property('id')
                 })
                 .then(res => 
                     supertest(app)

@@ -79,15 +79,37 @@ function makeUsersArray() {
         }
     ]
 }
+
+  function makeShowsArray() {
+    return [
+      {
+        title: 'Amateur Showcase',
+        show_date: 7/11/2020,
+        show_time: 1800,
+        details: 'These are the details',
+        notes: 'These are the notes',
+        price_premium: 20,
+        price_general: 15,
+        capacity: 150,
+        comps: 5,
+        tix_id: 1
+      },
+      {
+        title: 'Professional Showcase',
+        show_date: 8/30/2020,
+        show_time: 1800,
+        details: 'These are the details',
+        notes: 'These are the notes',
+        price_premium: 20,
+        price_general: 15,
+        capacity: 150,
+        comps: 10,
+        tix_id: 2
+      }
+    ]
+  }
   
-  function makeExpectedComedian(users, comedians=[]) {
-    // const author = users
-    //   .find(user => user.id === comedian.id)
-  
-    // const number_of_comments = comments
-    //   .filter(comment => comment.article_id === article.id)
-    //   .length
-  
+  function makeExpectedComedian(comedians=[]) {
     return {
       first_name: comedian.first_name,
       last_name: comedian.last_name,
@@ -174,7 +196,8 @@ function makeUsersArray() {
       trx.raw(
         `TRUNCATE
           users,
-          comedian
+          comedian,
+          show
         `
       )
       .then(() =>
@@ -188,11 +211,12 @@ function makeUsersArray() {
     )
   }
   
-  function seedComedianTables(db, users, comedians=[]) {
+  function seedComedianTables(db, users, comedians=[], shows=[]) {
     // use a transaction to group the queries and auto rollback on any failure
     return db.transaction(async trx => {
       await trx.into('users').insert(users)
       await trx.into('comedian').insert(comedians)
+      await trx.into('show').insert(shows)
       // update the auto sequence to match the forced id values
       await Promise.all([
         trx.raw(
@@ -202,6 +226,10 @@ function makeUsersArray() {
         trx.raw(
           `SELECT setval('comedian_id_seq', ?)`,
           [comedians[comedians.length - 1].id],
+        ),
+        trx.raw(
+          `SELECT setval('show_id_seq', ?)`,
+          [shows[shows.length - 1].id],
         ),
       ])
     })
@@ -221,6 +249,7 @@ function makeUsersArray() {
   module.exports = {
     makeUsersArray,
     makeComediansArray,
+    makeShowsArray,
     makeExpectedComedian,
     makeMaliciousComedian,
   
