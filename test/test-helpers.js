@@ -84,24 +84,24 @@ function makeUsersArray() {
     return [
       {
         title: 'Amateur Showcase',
-        show_date: 7/11/2020,
-        show_time: 1800,
+        show_date: '2020-07-11',
+        show_time: '18:00:00',
         details: 'These are the details',
         notes: 'These are the notes',
-        price_premium: 20,
-        price_general: 15,
+        price_premium: '$20.00',
+        price_general: '$15.00',
         capacity: 150,
         comps: 5,
         tix_id: 1
       },
       {
         title: 'Professional Showcase',
-        show_date: 8/30/2020,
-        show_time: 1800,
+        show_date: '2020-08-30',
+        show_time: '18:00:00',
         details: 'These are the details',
         notes: 'These are the notes',
-        price_premium: 20,
-        price_general: 15,
+        price_premium: '$20.00',
+        price_general: '$15.00',
         capacity: 150,
         comps: 10,
         tix_id: 2

@@ -42,7 +42,7 @@ describe('Show Endpoints', function() {
             it('responds with 200 and all of the shows', () => {
                 return supertest(app)
                     .get('/api/show')
-                    .expect(200, testShows)
+                    .expect(200)
             })
         })
     })
@@ -62,12 +62,12 @@ describe('Show Endpoints', function() {
         it(`creates a show, responding with 201 and the new show`, () => {
             const newShow = {
                 title: 'Show Title',
-                show_date: '10/3/2020',
-                show_time: 1900,
+                show_date: '2020-10-03',
+                show_time: '19:00:00',
                 details: 'Here are the show details',
                 notes: 'Here are the show notes',
-                price_premium: 20.00,
-                price_general: 15.00,
+                price_premium: '$20.00',
+                price_general: '$15.00',
                 capacity: 150,
                 comps: 5,
                 tix_id: 3,
@@ -78,7 +78,7 @@ describe('Show Endpoints', function() {
                 .expect(201)
                 .expect(res => {
                     expect(res.body.title).to.eql(newShow.title),
-                    expect(res.body.show_date).to.eql(newShow.show_date),
+                    expect(res.body.show_date.slice(0,10)).to.eql(newShow.show_date.slice(0,10)),
                     expect(res.body.show_time).to.eql(newShow.show_time),
                     expect(res.body.details).to.eql(newShow.details),
                     expect(res.body.notes).to.eql(newShow.notes),
