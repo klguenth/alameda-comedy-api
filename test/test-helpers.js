@@ -108,6 +108,21 @@ function makeUsersArray() {
       }
     ]
   }
+
+  function makeLineupsArray() {
+    [
+      {
+        show_id: 2,
+        comedian_id: 3,
+        set_time: 15
+      },
+      {
+        show_id: 3,
+        comedian_id: 4,
+        set_time: 10
+      }
+    ]
+  }
   
   function makeExpectedComedian(comedians=[]) {
     return {
@@ -250,6 +265,7 @@ function makeUsersArray() {
     makeUsersArray,
     makeComediansArray,
     makeShowsArray,
+    makeLineupsArray,
     makeExpectedComedian,
     makeMaliciousComedian,
   
