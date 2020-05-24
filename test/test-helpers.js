@@ -123,6 +123,15 @@ function makeUsersArray() {
       }
     ]
   }
+
+  function makeLinksArray() {
+    [
+      {
+        detail: 'This is test detail',
+        link: 'This is a test link'
+      }
+    ]
+  }
   
   function makeExpectedComedian(comedians=[]) {
     return {
@@ -266,6 +275,7 @@ function makeUsersArray() {
     makeComediansArray,
     makeShowsArray,
     makeLineupsArray,
+    makeLinksArray,
     makeExpectedComedian,
     makeMaliciousComedian,
   
