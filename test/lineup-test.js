@@ -3,7 +3,7 @@ const app = require('../src/app.js');
 const { expect } = require('chai');
 const { TEST_DB_URL } = require('../src/config');
 const knex = require('knex');
-const { makeLineupsArray } = require('./test-helpers.js')
+const { makeLineupsArray, makeShowsArray, makeComediansArray } = require('./test-helpers.js')
 
 describe('Lineup Endpoints', function() {
     let db;
@@ -62,11 +62,29 @@ describe('Lineup Endpoints', function() {
     // })
 
     describe(`POST /`, () => {
+    context(`Given there are lineups in the database`, () => {
+        const testLineups = makeLineupsArray()
+        const testShows = makeShowsArray()
+        const testComedians = makeComediansArray()
+
+        beforeEach('insert lineups', () => {
+            return db
+                .into('comedian')
+                .insert(testComedians)
+                .into('show')
+                .insert(testShows)
+                .then(() => {
+                    return db
+                        .into('lineup')
+                        .insert(testLineups)
+                })
+        })
+
         it(`creates a lineup, responding with 201 and the new lineup`, () => {
             const newLineup = {
                 set_time: 20,
-                comedian_id: 2,
-                show_id: 2
+                comedian_id: 3,
+                show_id: 1
             }
             return supertest(app)
                 .post('/api/lineup')
@@ -89,8 +107,8 @@ describe('Lineup Endpoints', function() {
         requiredFields.forEach(key => {
             const newLineup = {
                 set_time: 20,
-                comedian_id: 2,
-                show_id: 2
+                comedian_id: 3,
+                show_id: 1
             }
             it(`responds with 400 and an error message when the '${key}', is missing`, () => {
                 for (const [key, value] of Object.entries(newLineup))
@@ -105,5 +123,6 @@ describe('Lineup Endpoints', function() {
             })
         })
     })
+})
 })
 module.exports = app;
