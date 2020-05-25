@@ -113,12 +113,12 @@ function makeUsersArray() {
     [
       {
         show_id: 2,
-        comedian_id: 3,
+        comedian_id: 2,
         set_time: 15
       },
       {
         show_id: 3,
-        comedian_id: 4,
+        comedian_id: 3,
         set_time: 10
       }
     ]

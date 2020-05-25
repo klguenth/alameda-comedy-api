@@ -65,8 +65,8 @@ describe('Lineup Endpoints', function() {
         it(`creates a lineup, responding with 201 and the new lineup`, () => {
             const newLineup = {
                 set_time: 20,
-                comedian_id: null,
-                show_id: null
+                comedian_id: 2,
+                show_id: 2
             }
             return supertest(app)
                 .post('/api/lineup')
@@ -89,12 +89,12 @@ describe('Lineup Endpoints', function() {
         requiredFields.forEach(key => {
             const newLineup = {
                 set_time: 20,
-                comedian_id: null,
-                show_id: null
+                comedian_id: 2,
+                show_id: 2
             }
             it(`responds with 400 and an error message when the '${key}', is missing`, () => {
                 for (const [key, value] of Object.entries(newLineup))
-                console.log(key, value, 'key and value')
+                // console.log(key, value, 'key and value')
                     if (value == null)
                 return supertest(app)
                     .post('/api/lineup')
