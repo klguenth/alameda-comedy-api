@@ -47,10 +47,10 @@ linkRouter
     })
 
 linkRouter
-    //get by comedian id
-    .all('/:comedian_id', (req, res, next) => {
+    //get by link id
+    .all('/:id', (req, res, next) => {
         const knex = req.app.get('db')
-        LinkService.getByComedianId(
+        LinkService.getByLinkId(
             knex,
             req.params.id
         )
@@ -66,13 +66,13 @@ linkRouter
         .catch(next)
     })
     //retrieve link with specified id
-    .get('/:comedian_id', (req, res, next) => {
+    .get('/:d', (req, res, next) => {
         res.json(serializeLink(res.link))
     })
     //edit existing link
     .patch('/:id', jsonBodyParser, (req, res, next) => {
         const { detail, link, comedian_id } = req.body
-        const showToUpdate = { detail, link, comedian_id }
+        const linkToUpdate = { detail, link, comedian_id }
 
         const numberOfValues = Object.values(linkToUpdate).filter(Boolean).length
         if (numberOfValues === 0)

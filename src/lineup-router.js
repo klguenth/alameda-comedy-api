@@ -70,7 +70,7 @@ lineupRouter
     //edit existing lineup
     .patch('/:id', jsonBodyParser, (req, res, next) => {
         const { show_id, comedian_id, set_time } = req.body
-        const showToUpdate = { show_id, comedian_id, set_time }
+        const lineupToUpdate = { show_id, comedian_id, set_time }
 
         const numberOfValues = Object.values(lineupToUpdate).filter(Boolean).length
         if (numberOfValues === 0)

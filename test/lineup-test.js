@@ -65,13 +65,17 @@ describe('Lineup Endpoints', function() {
         it(`creates a lineup, responding with 201 and the new lineup`, () => {
             const newLineup = {
                 set_time: 20,
+                comedian_id: null,
+                show_id: null
             }
             return supertest(app)
                 .post('/api/lineup')
                 .send(newLineup)
                 .expect(201)
                 .expect(res => {
-                    expect(res.body.set_time).to.eql(newLineup.set_time)
+                    expect(res.body.set_time).to.eql(newLineup.set_time),
+                    expect(res.body.comedian_id).to.eql(newLineup.comedian_id),
+                    expect(res.body.show_id).to.eql(newLineup.show_id)
                 })
                 .then(res => 
                     supertest(app)
@@ -80,14 +84,17 @@ describe('Lineup Endpoints', function() {
                 )
         })
 
-        const requiredFields = ['set_time']
+        const requiredFields = ['set_time', 'comedian_id', 'show_id']
 
         requiredFields.forEach(key => {
             const newLineup = {
-                set_time: 20
+                set_time: 20,
+                comedian_id: null,
+                show_id: null
             }
             it(`responds with 400 and an error message when the '${key}', is missing`, () => {
                 for (const [key, value] of Object.entries(newLineup))
+                console.log(key, value, 'key and value')
                     if (value == null)
                 return supertest(app)
                     .post('/api/lineup')
