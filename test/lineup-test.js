@@ -69,10 +69,14 @@ describe('Lineup Endpoints', function() {
 
         beforeEach('insert lineups', () => {
             return db
-                .into('comedian')
                 .insert(testComedians)
-                .into('show')
+                .into('comedian')
+                .returning('id')
+                .into('lineup')
                 .insert(testShows)
+                .into('show')
+                .returning('id')
+                .into('lineup')
                 .then(() => {
                     return db
                         .into('lineup')
@@ -83,7 +87,7 @@ describe('Lineup Endpoints', function() {
         it(`creates a lineup, responding with 201 and the new lineup`, () => {
             const newLineup = {
                 set_time: 20,
-                comedian_id: 3,
+                comedian_id: 1,
                 show_id: 1
             }
             return supertest(app)
@@ -107,7 +111,7 @@ describe('Lineup Endpoints', function() {
         requiredFields.forEach(key => {
             const newLineup = {
                 set_time: 20,
-                comedian_id: 3,
+                comedian_id: 1,
                 show_id: 1
             }
             it(`responds with 400 and an error message when the '${key}', is missing`, () => {
