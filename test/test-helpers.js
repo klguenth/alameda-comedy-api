@@ -110,15 +110,15 @@ function makeUsersArray() {
   }
 
   function makeLineupsArray() {
-    [
+    return [
       {
-        show_id: 2,
-        comedian_id: 2,
+        show_id: null,
+        comedian_id: null,
         set_time: 15
       },
       {
-        show_id: 3,
-        comedian_id: 3,
+        show_id: null,
+        comedian_id: null,
         set_time: 10
       }
     ]

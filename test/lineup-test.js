@@ -68,16 +68,33 @@ describe('Lineup Endpoints', function() {
         const testComedians = makeComediansArray()
 
         beforeEach('insert lineups', () => {
+            let comedianIds = null;
+            let showIds = null;
             return db
                 .insert(testComedians)
                 .into('comedian')
                 .returning('id')
-                .into('lineup')
-                .insert(testShows)
-                .into('show')
-                .returning('id')
-                .into('lineup')
+                .then((id) => {
+                    comedianIds = id;
+                    return db;
+                })
+                .then(db => {
+                    return db
+                    .insert(testShows)
+                    .into('show')
+                    .returning('id')
+                    .then((id) => {
+                        showIds = id;
+                        return db;
+                    })
+                })
                 .then(() => {
+                    console.log(comedianIds);
+                    console.log(showIds);
+                    testLineups[0].comedian_id = comedianIds[0];
+                    testLineups[1].comedian_id = comedianIds[1];
+                    testLineups[0].show_id = showIds[0];
+                    testLineups[1].show_id = showIds[1];
                     return db
                         .into('lineup')
                         .insert(testLineups)
@@ -85,11 +102,7 @@ describe('Lineup Endpoints', function() {
         })
 
         it(`creates a lineup, responding with 201 and the new lineup`, () => {
-            const newLineup = {
-                set_time: 20,
-                comedian_id: 1,
-                show_id: 1
-            }
+            const newLineup = testLineups[0];
             return supertest(app)
                 .post('/api/lineup')
                 .send(newLineup)
@@ -99,11 +112,11 @@ describe('Lineup Endpoints', function() {
                     expect(res.body.comedian_id).to.eql(newLineup.comedian_id),
                     expect(res.body.show_id).to.eql(newLineup.show_id)
                 })
-                .then(res => 
-                    supertest(app)
-                        .get(`/api/lineup/${res.body.id}`)
-                        .expect(res.body)
-                )
+                // .then(res => 
+                //     supertest(app)
+                //         .get(`/api/lineup/${res.body.id}`)
+                //         .expect(res.body)
+                // )
         })
 
         const requiredFields = ['set_time', 'comedian_id', 'show_id']

@@ -22,6 +22,7 @@ const LineupService = {
             .update(newItemFields)
     },
     insertLineup(knex, newLineup) {
+        console.log('new lineup', newLineup)
         return knex
             .insert(newLineup)
             .into('lineup')
