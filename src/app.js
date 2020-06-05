@@ -20,7 +20,7 @@ const morganOption = (NODE_ENV === 'production')
 
 const db = knex({
     client: 'pg',
-    connection: DB_URL,
+    connection: DATABASE_URL,
 })
 
 app.set('db', db)
