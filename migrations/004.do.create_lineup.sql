@@ -3,5 +3,5 @@ CREATE TABLE lineup (
     show_id INTEGER REFERENCES show(id),
     comedian_id INTEGER REFERENCES comedian(id),
     set_time INTEGER,
-    order INTEGER
+    set_order INTEGER
 );
