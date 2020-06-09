@@ -13,6 +13,7 @@ const serializeShow = show => ({
     title: xss(show.title),
     show_date: show.show_date,
     show_time: show.show_time,
+    comics: show.comics,
     details: xss(show.details),
     notes: xss(show.notes),
     price_premium: show.price_premium,
