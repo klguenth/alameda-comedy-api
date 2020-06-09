@@ -1,9 +1,9 @@
 require('dotenv').config()
-const { NODE_ENV, PORT, DB_URL } = require('./config');
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
-const helmet = require('helmet')
+const { NODE_ENV, PORT, DATABASE_URL } = require('./config');
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const helmet = require('helmet');
 const knex = require('knex');
 const usersRouter = require('./users-router');
 const authRouter = require('./auth-router');
