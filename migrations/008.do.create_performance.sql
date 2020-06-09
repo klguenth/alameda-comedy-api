@@ -3,5 +3,5 @@ CREATE TABLE performance (
     show_id INTEGER REFERENCES show(id),
     comedian_id INTEGER REFERENCES comedian(id),
     rating INTEGER,
-    notes TEXT,
+    notes TEXT
 )
