@@ -88,7 +88,7 @@ showRouter
         if (numberOfValues === 0)
             return res.status(400).json({
                 error: {
-                    message: `Request body must contain 'title', 'show_date', 'show_time', 'details', 'notes', 'price_premium', 'price_general', 'capacity', 'comps', or 'tix_id'`
+                    message: `Request body must contain 'title', 'show_date', 'show_time', 'comics', 'details', 'notes', 'price_premium', 'price_general', 'capacity', 'comps', or 'tix_id'`
                 }
             })
         ShowService.updateShow(
