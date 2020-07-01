@@ -13,5 +13,11 @@ CREATE TABLE show (
     price_general MONEY NOT NULL,
     capacity INTEGER,
     comps INTEGER,
-    tix_id INTEGER
+    tix_id INTEGER,
+    comic_one TEXT,
+    comic_two TEXT,
+    comic_three TEXT,
+    comic_four TEXT,
+    comic_five TEXT,
+    comic_six TEXT,
 )
