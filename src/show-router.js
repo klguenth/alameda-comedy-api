@@ -20,7 +20,13 @@ const serializeShow = show => ({
     price_general: show.price_general,
     capacity: show.capacity,
     comps: show.comps,
-    tix_id: show.tix_id
+    tix_id: show.tix_id,
+    comic_one: show.comic_one,
+    comic_two: show.comic_two,
+    comic_three: show.comic_three,
+    comic_four: show.comic_four,
+    comic_five: show.comic_five,
+    comic_six: show.comic_six
 })
 
 showRouter
@@ -81,14 +87,14 @@ showRouter
     })
     //edit existing show
     .patch('/:id', jsonBodyParser, (req, res, next) => {
-        const { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id } = req.body
-        const showToUpdate = { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id }
+        const { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, comic_one, comic_two, comic_three, comic_four, comic_five, comic_six } = req.body
+        const showToUpdate = { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, omic_one, comic_two, comic_three, comic_four, comic_five, comic_six }
 
         const numberOfValues = Object.values(showToUpdate).filter(Boolean).length
         if (numberOfValues === 0)
             return res.status(400).json({
                 error: {
-                    message: `Request body must contain 'title', 'show_date', 'show_time', 'comics', 'details', 'notes', 'price_premium', 'price_general', 'capacity', 'comps', or 'tix_id'`
+                    message: `Request body must contain 'title', 'show_date', 'show_time', 'comics', 'details', 'notes', 'price_premium', 'price_general', 'capacity', 'comps', 'tix_id', 'comic_one', 'comic_two', 'comic_three', 'comic_four', 'comic_five', 'comic_six'`
                 }
             })
         ShowService.updateShow(
