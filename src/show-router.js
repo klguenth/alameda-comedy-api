@@ -55,6 +55,7 @@ showRouter
             newShow
         )
         .then(show => {
+            console.log('show', show);
             res
                 .status(201)
                 .location(path.posix.join(req.originalUrl, `/${show.id}`))

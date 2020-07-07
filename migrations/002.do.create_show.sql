@@ -19,5 +19,5 @@ CREATE TABLE show (
     comic_three TEXT,
     comic_four TEXT,
     comic_five TEXT,
-    comic_six TEXT,
+    comic_six TEXT
 )

@@ -1,7 +1,7 @@
 require('dotenv').config()
 const app = require('../src/app.js');
 const { expect } = require('chai');
-const { TEST_DB_URL } = require('../src/config');
+const { TEST_DATABASE_URL } = require('../src/config');
 const knex = require('knex');
 const { makeLineupsArray, makeShowsArray, makeComediansArray } = require('./test-helpers.js')
 
@@ -9,10 +9,10 @@ describe('Lineup Endpoints', function() {
     let db;
 
     before('make knex instance', () => {
-        console.log(TEST_DB_URL, 'test db url');
+        console.log(TEST_DATABASE_URL, 'test db url');
         db = knex({
             client: 'pg',
-            connection: TEST_DB_URL,
+            connection: TEST_DATABASE_URL,
         })
         app.set('db', db)
     })

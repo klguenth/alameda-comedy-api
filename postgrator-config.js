@@ -8,4 +8,9 @@ module.exports = {
         : process.env.DATABASE_URL,
     "ssl": !!process.env.SSL,
     "validateChecksums": false,
+    "database": (process.env.NODE_ENV === 'test')
+        ? "alamedacomedy-test"
+        : "alamedacomedy",
+    "username": "alamedacomedy",
+    "password": "alamedacomedy"
 }
