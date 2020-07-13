@@ -12,7 +12,8 @@ const AuthService = {
         return bcrypt.compare(pw, hash)
     },
     createJwt(subject, payload) {
-        return jwt.sign(payload, config.JWT_SECRET, {
+        console.log('JWT Secret', config.JWT_SECRET);
+        return jwt.sign(payload, 'secret string', {
             subject,
             algorithm: 'HS256',
         })

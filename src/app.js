@@ -1,5 +1,7 @@
 require('dotenv').config()
-const { NODE_ENV, PORT, DATABASE_URL } = require('./config');
+const { NODE_ENV, PORT, DATABASE_URL, JWT_SECRET } = require('./config');
+console.log('jwtsecret', JWT_SECRET);
+console.log('databaseurl', DATABASE_URL);
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');

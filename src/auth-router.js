@@ -5,8 +5,9 @@ require('dotenv').config();
 const authRouter = express.Router();
 const jsonBodyParser = express.json();
 
+//logging in a user
 authRouter
-    .post('/users', jsonBodyParser, (req, res, next) => {
+    .post('/login', jsonBodyParser, (req, res, next) => {
         const { email, pw } = req.body
         const loginUser = { email, pw }
 
@@ -34,7 +35,7 @@ authRouter
                             })
 
                         const sub = dbUser.email
-                        const payload = { user_id: dbUser.is }
+                        const payload = { user_id: dbUser.id }
                         res.send({
                             authToken: AuthService.createJwt(sub, payload),
                         })
