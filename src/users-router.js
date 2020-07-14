@@ -7,7 +7,7 @@ const jsonBodyParser = express.json()
 
 usersRouter
 //POST to create user
-  .post('/users', jsonBodyParser, (req, res, next) => {
+  .post('/', jsonBodyParser, (req, res, next) => {
     const { pw, email, full_name } = req.body
     for (const field of ['full_name', 'email', 'pw']) {
       if (!req.body[field])
