@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const xss = require('xss')
 const LinkService = require('./link-service.js')
+const { requireAuth } = require('./jwt-auth')
 
 const linkRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -16,17 +17,7 @@ const serializeLink = link => ({
 })
 
 linkRouter
-    //get all links
-    // .get('/', jsonBodyParser, (req, res, next) => {
-    //     const knex = req.app.get('db')
-    //     LinkService.getAllLinks(knex)
-    //         .then(links => {
-    //             res.json(links.map(serializeLink))
-    //         })
-    //         .catch(next)
-    // })
-    //create new link
-    .post('/', jsonBodyParser, (req, res, next) => {
+    .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newLink = req.body
         for (const [key, value] of Object.entries(newLink))
             if (value == null)
@@ -48,7 +39,7 @@ linkRouter
 
 linkRouter
     //get by link id
-    .all('/:id', (req, res, next) => {
+    .all('/:id', requireAuth, (req, res, next) => {
         const knex = req.app.get('db')
         LinkService.getByLinkId(
             knex,
@@ -66,11 +57,11 @@ linkRouter
         .catch(next)
     })
     //retrieve link with specified id
-    .get('/:d', (req, res, next) => {
+    .get('/:d', requireAuth, (req, res, next) => {
         res.json(serializeLink(res.link))
     })
     //edit existing link
-    .patch('/:id', jsonBodyParser, (req, res, next) => {
+    .patch('/:id', jsonBodyParser, requireAuth, (req, res, next) => {
         const { detail, link, comedian_id } = req.body
         const linkToUpdate = { detail, link, comedian_id }
 
@@ -92,7 +83,7 @@ linkRouter
         .catch(next)
     })
     //delete link of specified id
-    .delete('/:id', (req, res, next) => {
+    .delete('/:id', requireAuth, (req, res, next) => {
         LinkService.deleteLink(
             req.app.get('db'),
             req.params.id
@@ -102,19 +93,5 @@ linkRouter
         })
         .catch(next)
     })
-
-// sightingsRouter
-//     .get('/species/:species', (req, res, next) => {
-//         const knex = req.app.get('db')
-//         const species = req.params.species
-//         SightingsService.getBySpecies(
-//             knex,
-//             species
-//         )
-//         .then(sightings => {
-//             res.json(sightings.map(serializeSighting))
-//         })
-//         .catch(next)
-//     })
 
 module.exports = linkRouter;

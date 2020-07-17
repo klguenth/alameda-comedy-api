@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const config = require('./config');
 
 const AuthService = {
-    getUserWithEmail(db, email) {
+    getUserWithUserName(db, email) {
         return db('users')
             .where({ email })
             .first()
@@ -12,11 +12,17 @@ const AuthService = {
         return bcrypt.compare(pw, hash)
     },
     createJwt(subject, payload) {
-        console.log('JWT Secret', config.JWT_SECRET);
-        return jwt.sign(payload, 'secret string', {
+        return jwt.sign(payload, config.JWT_SECRET, {
             subject,
             algorithm: 'HS256',
         })
+    },
+    makeAuthHeader(user, secret = config.JWT_SECRET) {
+        const token = jwt.sign({ user_id: user.id }, secret, {
+            subject: user.user_name,
+            algorithm: 'HS256',
+        })
+        return `Bearer ${token}`
     },
     verifyJwt(token) {
         return jwt.verify(token, config.JWT_SECRET, {

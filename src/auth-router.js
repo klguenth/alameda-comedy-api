@@ -1,6 +1,7 @@
 const express = require('express');
 const AuthService = require('./auth-service');
 require('dotenv').config();
+const { requireAuth } = require('./jwt-auth');
 
 const authRouter = express.Router();
 const jsonBodyParser = express.json();
@@ -17,7 +18,7 @@ authRouter
                     error: `Missing '${key}' in request body`
                 })
 
-        AuthService.getUserWithEmail(
+        AuthService.getUserWithUserName(
             req.app.get('db'),
             loginUser.email
         )

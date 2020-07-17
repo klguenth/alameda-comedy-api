@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const xss = require('xss')
 const ComedianService = require('./comedian-service.js')
+const { requireAuth } = require('./jwt-auth')
 
 const comedianRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -35,7 +36,7 @@ const serializeComedian = comedian => ({
 
 comedianRouter
     //get all comedians
-    .get('/', jsonBodyParser, (req, res, next) => {
+    .get('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const knex = req.app.get('db')
         ComedianService.getAllComedians(knex)
             .then(comedians => {
@@ -49,7 +50,7 @@ comedianRouter
             .catch(next)
     })
     //create new comedian
-    .post('/', jsonBodyParser, (req, res, next) => {
+    .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newComedian = req.body
         for (const [key, value] of Object.entries(newComedian))
             if (value == null)
@@ -70,7 +71,7 @@ comedianRouter
     })
 
 comedianRouter
-    .all('/:id', (req, res, next) => {
+    .all('/:id', requireAuth, (req, res, next) => {
         const knex = req.app.get('db')
         ComedianService.getById(
             knex,
@@ -88,11 +89,11 @@ comedianRouter
         .catch(next)
     })
     //retrieve comedian with specified id
-    .get('/:id', (req, res, next) => {
+    .get('/:id', requireAuth, (req, res, next) => {
         res.json(serializeComedian(res.comedian))
     })
     //edit existing comedian
-    .patch('/:id', jsonBodyParser, (req, res, next) => {
+    .patch('/:id', jsonBodyParser,requireAuth, (req, res, next) => {
         const { first_name, last_name, phone, email, bio, notes, category, gender, age, race, passed, clean, ssn, street, city, st, zip, website, facebook, twitter, instagram } = req.body
         const comedianToUpdate = { first_name, last_name, phone, email, bio, notes, category, gender, age, race, passed, clean, ssn, street, city, st, zip, website, facebook, twitter, instagram }
 
@@ -114,7 +115,7 @@ comedianRouter
         .catch(next)
     })
     //delete comedian of specified id
-    .delete('/:id', (req, res, next) => {
+    .delete('/:id', requireAuth, (req, res, next) => {
         ComedianService.deleteComedian(
             req.app.get('db'),
             req.params.id

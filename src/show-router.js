@@ -2,6 +2,7 @@ const express = require('express')
 const path = require('path')
 const xss = require('xss')
 const ShowService = require('./show-service.js')
+const { requireAuth } = require('./jwt-auth')
 
 const showRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -31,7 +32,7 @@ const serializeShow = show => ({
 
 showRouter
     //get all shows
-    .get('/', jsonBodyParser, (req, res, next) => {
+    .get('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const knex = req.app.get('db')
         ShowService.getAllShows(knex)
             .then(shows => {
@@ -43,7 +44,7 @@ showRouter
     //limit 24 shows per get
 
     //create new show
-    .post('/', jsonBodyParser, (req, res, next) => {
+    .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newShow = req.body
         for (const [key, value] of Object.entries(newShow))
             if (value == null)
@@ -65,7 +66,7 @@ showRouter
     })
 
 showRouter
-    .all('/:id', (req, res, next) => {
+    .all('/:id', requireAuth, (req, res, next) => {
         const knex = req.app.get('db')
         ShowService.getById(
             knex,
@@ -83,11 +84,11 @@ showRouter
         .catch(next)
     })
     //retrieve show with specified id
-    .get('/:id', (req, res, next) => {
+    .get('/:id', requireAuth, (req, res, next) => {
         res.json(serializeShow(res.show))
     })
     //edit existing show
-    .patch('/:id', jsonBodyParser, (req, res, next) => {
+    .patch('/:id', jsonBodyParser, requireAuth, (req, res, next) => {
         const { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, comic_one, comic_two, comic_three, comic_four, comic_five, comic_six } = req.body
         const showToUpdate = { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, omic_one, comic_two, comic_three, comic_four, comic_five, comic_six }
 
@@ -109,7 +110,7 @@ showRouter
         .catch(next)
     })
     //delete show of specified id
-    .delete('/:id', (req, res, next) => {
+    .delete('/:id', requireAuth, (req, res, next) => {
         ShowService.deleteShow(
             req.app.get('db'),
             req.params.id
@@ -119,19 +120,5 @@ showRouter
         })
         .catch(next)
     })
-
-// sightingsRouter
-//     .get('/species/:species', (req, res, next) => {
-//         const knex = req.app.get('db')
-//         const species = req.params.species
-//         SightingsService.getBySpecies(
-//             knex,
-//             species
-//         )
-//         .then(sightings => {
-//             res.json(sightings.map(serializeSighting))
-//         })
-//         .catch(next)
-//     })
 
 module.exports = showRouter;

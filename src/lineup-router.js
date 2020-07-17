@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const LineupService = require('./lineup-service.js')
+const { requireAuth } = require('./jwt-auth')
 
 const lineupRouter = express.Router()
 const jsonBodyParser = express.json()
@@ -25,7 +26,7 @@ lineupRouter
     //         .catch(next)
     // })
     // create new lineup
-    .post('/', jsonBodyParser, (req, res, next) => {
+    .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newLineup = req.body
         for (const [key, value] of Object.entries(newLineup))
             if (value == null)
@@ -68,7 +69,7 @@ lineupRouter
     //     res.json(serializeLineup(res.lineup))
     // })
     //edit existing lineup
-    .patch('/:id', jsonBodyParser, (req, res, next) => {
+    .patch('/:id', jsonBodyParser, requireAuth, (req, res, next) => {
         const { show_id, comedian_id, set_time } = req.body
         const lineupToUpdate = { show_id, comedian_id, set_time }
 
@@ -90,7 +91,7 @@ lineupRouter
         .catch(next)
     })
     //delete lineup of specified id
-    .delete('/:id', (req, res, next) => {
+    .delete('/:id', requireAuth, (req, res, next) => {
         LineupService.deleteLineup(
             req.app.get('db'),
             req.params.id
