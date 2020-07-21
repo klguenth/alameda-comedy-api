@@ -16,15 +16,6 @@ const serializeLineup = lineup => ({
 })
 
 lineupRouter
-    //get all lineups
-    // .get('/', jsonBodyParser, (req, res, next) => {
-    //     const knex = req.app.get('db')
-    //     LineupService.getAllLineups(knex)
-    //         .then(lineups => {
-    //             res.json(lineups.map(serializeLineup))
-    //         })
-    //         .catch(next)
-    // })
     // create new lineup
     .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newLineup = req.body
@@ -47,27 +38,6 @@ lineupRouter
     })
 
 lineupRouter
-    // .all('/:id', (req, res, next) => {
-    //     const knex = req.app.get('db')
-    //     LineupService.getById(
-    //         knex,
-    //         req.params.id
-    //     )
-    //     .then(lineup => {
-    //         if(!lineup) {
-    //             return res.status(404).json({
-    //                 error: { message: `Lineup doesn't exist` }
-    //             })
-    //         }
-    //         res.lineup = lineup
-    //         next()
-    //     })
-    //     .catch(next)
-    // })
-    // //retrieve lineup with specified id
-    // .get('/:id', (req, res, next) => {
-    //     res.json(serializeLineup(res.lineup))
-    // })
     //edit existing lineup
     .patch('/:id', jsonBodyParser, requireAuth, (req, res, next) => {
         const { show_id, comedian_id, set_time } = req.body
@@ -101,19 +71,5 @@ lineupRouter
         })
         .catch(next)
     })
-
-// sightingsRouter
-//     .get('/species/:species', (req, res, next) => {
-//         const knex = req.app.get('db')
-//         const species = req.params.species
-//         SightingsService.getBySpecies(
-//             knex,
-//             species
-//         )
-//         .then(sightings => {
-//             res.json(sightings.map(serializeSighting))
-//         })
-//         .catch(next)
-//     })
 
 module.exports = lineupRouter;
