@@ -40,9 +40,6 @@ showRouter
             })
             .catch(next)
     })
-    //TODO get upcoming shows
-    //limit 24 shows per get
-
     //create new show
     .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newShow = req.body

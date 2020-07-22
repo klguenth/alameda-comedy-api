@@ -11,12 +11,6 @@ const ComedianService = {
             .where('id', id)
             .first()
     },
-    // getBySpecies(knex, species) {
-    //     return knex
-    //         .from('sightings')
-    //         .select('*')
-    //         .where('species', species)
-    // },
     deleteComedian(knex, id) {
         return knex('comedian')
             .where({ id })
