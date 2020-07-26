@@ -6,16 +6,23 @@ const helpers = require('./test-helpers');
 const knex = require('knex');
 const express = require('express');
 const bcrypt = require('bcrypt');
-const { makeComediansArray } = require('./test-helpers.js')
+const { makeComediansArray, makeUsersArray } = require('./test-helpers.js');
+const supertest = require('supertest');
 
 describe('Comedian Endpoints', function() {
     let db;
     
     const testComedians = makeComediansArray()
-    // const testComediansWithId = testComedians.map((comedian, index) => {
-    //     comedian.id = index + 1
-    //     return comedian;
-    // })
+    const testUsers = makeUsersArray()
+
+    function makeAuthHeader(user) {
+        const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        return `Bearer ${token}`
+    }
+
+    function makeJWTAuthHeader() {
+        return `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
+    }
 
     before('make knex instance', () => {
         console.log(TEST_DATABASE_URL, 'test db url');
@@ -30,21 +37,35 @@ describe('Comedian Endpoints', function() {
 
     before(() => db.raw('BEGIN; ALTER TABLE comedian DISABLE TRIGGER ALL; TRUNCATE TABLE comedian CASCADE; ALTER TABLE comedian ENABLE TRIGGER ALL; COMMIT;'))
 
-    // before(() => db.raw('TRUNCATE lineup RESTART IDENTITY CASCADE'));
-    // before(() => db.raw('TRUNCATE links RESTART IDENTITY CASCADE'));
-    // before(() => db.raw('TRUNCATE credits RESTART IDENTITY CASCADE'));
-    // before(() => db.raw('TRUNCATE photos RESTART IDENTITY CASCADE'));
-    // before(() => db.raw('TRUNCATE comedian RESTART IDENTITY CASCADE'));
-
-    // before('clean the table', () => db('comedian').truncate())
-
-    // afterEach('cleanup', () => db('comedian').truncate())
+    describe(`GET /api/comedian`, () => {
+        it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
+            return supertest(app)
+                .get(`/api/comedian`)
+                .expect(401, { error: `Missing bearer token` })
+        })
+        it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
+            const userNoCreds = { email: '', pw: '' }
+            return supertest(app)
+                .get(`/api/comedian/123`)
+                .set('Authorization', makeAuthHeader(userNoCreds))
+                .expect(401, { error: `Unauthorized request` })
+        })
+        it(`responds 401 'Unauthorized request' when invalid user`, () => {
+            const userInvalidCreds = { email: 'user-not', pw: 'existy' }
+            return supertest(app)
+                .get(`/api/comedian/1`)
+                .set('Authorization', makeAuthHeader(userInvalidCreds))
+                .expect(401, { error: `Unauthorized request` })
+        })
+    })
 
     describe(`GET /api/comedian`, () => {
         context(`Given no comedians`, () => {
             it(`responds with 200 and an empty list`, () => {
                 return supertest(app)
                     .get('/api/comedian')
+                    .set('Authorization', makeJWTAuthHeader())
+                    .set('Authorization', makeAuthHeader())
                     .expect(200, [])
             })
         })
@@ -61,37 +82,25 @@ describe('Comedian Endpoints', function() {
             it('responds with 200 and all of the comedians', () => {
                 return supertest(app)
                     .get('/api/comedian')
-                    .expect(200/*, testComediansWithId*/)
+                    .set('Authorization', makeAuthHeader(testComedians))
+                    .expect(200)
             })
         })
     })
 
     describe(`GET /api/comedian/:id`, () => {
         context(`Given no comedian`, () => {
+            beforeEach(() =>
+                db.into('users').insert(testUsers)
+                )
             it(`responds with 404`, () => {
                 const comedianId = 123456
                 return supertest(app)
                     .get(`/api/comedian/${comedianId}`)
+                    .set('Authorization', makeAuthHeader(testComedians[0]))
                     .expect(404, { error: { 'message': 'Comedian doesn\'t exist' } })
             })
         })
-
-        // context('Given there are comedians in the database', () => {
-        //     const testComedians = makeComediansArray()
-        //     beforeEach('insert comedian', () => {
-        //         return db
-        //             .into('comedian')
-        //             .insert(testComedians)
-        //     })
-
-        //     it('responds with 200 and the specified comedian', () => {
-        //         const comedianId = 2
-        //         const expectedComedian = testComedians[comedianId - 1]
-        //         return supertest(app)
-        //             .get(`/api/comedian/${comedianId}`)
-        //             .expect(200, expectedComedian)
-        //     })
-        // })
     })
 
     describe(`POST /`, () => {
@@ -149,6 +158,7 @@ describe('Comedian Endpoints', function() {
                 .then(res => 
                     supertest(app)
                         .get(`/api/comedian/${res.body.id}`)
+                        .set('Authorization', makeJWTAuthHeader())
                         .expect(res.body)
                 )
         })

@@ -5,26 +5,22 @@ function makeUsersArray() {
       {
         full_name: 'Test user 1',
         email: 'email1@email.com',
-        pw: 'password',
-        date_created: now()
+        pw: 'password'
       },
       {
         full_name: 'Test user 2',
         email: 'email2@email.com',
-        pw: 'password',
-        date_created: now()
+        pw: 'password'
       },
       {
         full_name: 'Test user 3',
         email: 'email3@email.com',
-        pw: 'password',
-        date_created: now()
+        pw: 'password'
       },
       {
         full_name: 'Test user 4',
         email: 'email4@email.com',
-        pw: 'password',
-        date_created: now()
+        pw: 'password'
       },
     ]
   }

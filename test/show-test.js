@@ -3,13 +3,24 @@ const app = require('../src/app.js');
 const { expect } = require('chai');
 const { TEST_DATABASE_URL } = require('../src/config');
 const knex = require('knex');
-const { makeShowsArray } = require('./test-helpers.js')
+const { makeShowsArray, makeUsersArray } = require('./test-helpers.js')
 
 describe('Show Endpoints', function() {
     let db;
 
+    const testShows = makeShowsArray()
+    const testUsers = makeUsersArray()
+
+    function makeAuthHeader(user) {
+        const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        return `Bearer ${token}`
+    }
+
+    function makeJWTAuthHeader() {
+        return `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
+    }
+
     before('make knex instance', () => {
-        console.log('test db url', TEST_DATABASE_URL);
         db = knex({
             client: 'pg',
             connection: TEST_DATABASE_URL,
@@ -22,10 +33,35 @@ describe('Show Endpoints', function() {
     before(() => db.raw('BEGIN; ALTER TABLE show DISABLE TRIGGER ALL; TRUNCATE TABLE show CASCADE; ALTER TABLE show ENABLE TRIGGER ALL; COMMIT;'))
 
     describe(`GET /api/show`, () => {
+        it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
+            return supertest(app)
+                .get(`/api/show`)
+                .expect(401, { error: `Missing bearer token` })
+        })
+        it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
+            const userNoCreds = { email: '', pw: '' }
+            return supertest(app)
+                .get(`/api/show/123`)
+                .set('Authorization', makeAuthHeader(userNoCreds))
+                .expect(401, { error: `Unauthorized request` })
+        })
+        it(`responds 401 'Unauthorized request' when invalid user`, () => {
+            const userInvalidCreds = { email: 'user-not', pw: 'existy' }
+            return supertest(app)
+                .get(`/api/show/1`)
+                .set('Authorization', makeAuthHeader(userInvalidCreds))
+                .expect(401, { error: `Unauthorized request` })
+        })
+    })
+
+
+    describe(`GET /api/show`, () => {
         context(`Given no shows`, () => {
             it(`responds with 200 and an empty list`, () => {
                 return supertest(app)
                     .get('/api/show')
+                    .set('Authorization', makeJWTAuthHeader())
+                    .set('Authorization', makeAuthHeader())
                     .expect(200, [])
             })
         })
@@ -42,6 +78,8 @@ describe('Show Endpoints', function() {
             it('responds with 200 and all of the shows', () => {
                 return supertest(app)
                     .get('/api/show')
+                    .set('Authorization', makeJWTAuthHeader())
+                    .set('Authorization', makeAuthHeader())
                     .expect(200)
                     .expect(res => {
                         expect(res.body.length === testShows.length)
@@ -56,6 +94,8 @@ describe('Show Endpoints', function() {
                 const showId = 123456
                 return supertest(app)
                     .get(`/api/show/${showId}`)
+                    .set('Authorization', makeJWTAuthHeader())
+                    .set('Authorization', makeAuthHeader())
                     .expect(404, { error: { 'message': 'Show doesn\'t exist' } })
             })
         })
@@ -77,6 +117,8 @@ describe('Show Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/show')
+                .set('Authorization', makeJWTAuthHeader())
+                .set('Authorization', makeAuthHeader())
                 .send(newShow)
                 .expect(201)
                 .expect(res => {
@@ -113,6 +155,8 @@ describe('Show Endpoints', function() {
                     if (value == null)
                 return supertest(app)
                     .post('/api/show')
+                    .set('Authorization', makeJWTAuthHeader())
+                    .set('Authorization', makeAuthHeader())
                     .send(newShow)
                     .expect(400, {
                         error: { message: `Missing '${key}' in request body` }

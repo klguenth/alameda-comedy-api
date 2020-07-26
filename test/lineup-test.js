@@ -8,6 +8,15 @@ const { makeLineupsArray, makeShowsArray, makeComediansArray } = require('./test
 describe('Lineup Endpoints', function() {
     let db;
 
+    const testLineups = makeLineupsArray()
+    const testShows = makeShowsArray()
+    const testComedians = makeComediansArray()
+
+    function makeAuthHeader(user) {
+        const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        return `Bearer ${token}`
+    }
+
     before('make knex instance', () => {
         console.log(TEST_DATABASE_URL, 'test db url');
         db = knex({
@@ -21,45 +30,27 @@ describe('Lineup Endpoints', function() {
 
     before(() => db.raw('BEGIN; ALTER TABLE lineup DISABLE TRIGGER ALL; TRUNCATE TABLE lineup CASCADE; ALTER TABLE lineup ENABLE TRIGGER ALL; COMMIT;'))
 
-    // describe(`GET /api/lineup`, () => {
-    //     context(`Given no lineups`, () => {
-    //         it(`responds with 200 and an empty list`, () => {
-    //             return supertest(app)
-    //                 .get('/api/lineup')
-    //                 .expect(200, [])
-    //         })
-    //     })
-
-    //     context(`Given there are lineups in the database`, () => {
-    //         const testLineups = makeLineupsArray()
-
-    //         beforeEach('insert lineups', () => {
-    //             return db
-    //                 .into('lineup')
-    //                 .insert(testLineups)
-    //         })
-
-    //         it('responds with 200 and all of the lineups', () => {
-    //             return supertest(app)
-    //                 .get('/api/lineup')
-    //                 .expect(200)
-    //                 // .expect(res => {
-    //                 //     expect(res.body.length === testLineups.length)
-    //                 // })
-    //         })
-    //     })
-    // })
-
-    // describe(`GET /api/lineup/:id`, () => {
-    //     context(`Given no lineup`, () => {
-    //         it(`responds with 404`, () => {
-    //             const lineupId = 123456
-    //             return supertest(app)
-    //                 .get(`/api/lineup/${lineupId}`)
-    //                 .expect(404, { error: { 'message': 'Lineup doesn\'t exist' } })
-    //         })
-    //     })
-    // })
+    describe(`GET /api/lineup`, () => {
+        it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
+            return supertest(app)
+                .get(`/api/lineup`)
+                .expect(401, { error: `Missing bearer token` })
+        })
+        it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
+            const userNoCreds = { email: '', pw: '' }
+            return supertest(app)
+                .get(`/api/lineup/123`)
+                .set('Authorization', makeAuthHeader(userNoCreds))
+                .expect(401, { error: `Unauthorized request` })
+        })
+        it(`responds 401 'Unauthorized request' when invalid user`, () => {
+            const userInvalidCreds = { email: 'user-not', pw: 'existy' }
+            return supertest(app)
+                .get(`/api/lineup/1`)
+                .set('Authorization', makeAuthHeader(userInvalidCreds))
+                .expect(401, { error: `Unauthorized request` })
+        })
+    })
 
     describe(`POST /`, () => {
     context(`Given there are lineups in the database`, () => {
@@ -105,6 +96,7 @@ describe('Lineup Endpoints', function() {
             const newLineup = testLineups[0];
             return supertest(app)
                 .post('/api/lineup')
+                .set('Authorization', makeAuthHeader(newLineup))
                 .send(newLineup)
                 .expect(201)
                 .expect(res => {
@@ -112,11 +104,6 @@ describe('Lineup Endpoints', function() {
                     expect(res.body.comedian_id).to.eql(newLineup.comedian_id),
                     expect(res.body.show_id).to.eql(newLineup.show_id)
                 })
-                // .then(res => 
-                //     supertest(app)
-                //         .get(`/api/lineup/${res.body.id}`)
-                //         .expect(res.body)
-                // )
         })
 
         const requiredFields = ['set_time', 'comedian_id', 'show_id']
@@ -129,7 +116,6 @@ describe('Lineup Endpoints', function() {
             }
             it(`responds with 400 and an error message when the '${key}', is missing`, () => {
                 for (const [key, value] of Object.entries(newLineup))
-                // console.log(key, value, 'key and value')
                     if (value == null)
                 return supertest(app)
                     .post('/api/lineup')

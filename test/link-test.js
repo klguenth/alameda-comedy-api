@@ -8,6 +8,17 @@ const { makeLinksArray } = require('./test-helpers.js')
 describe('Link Endpoints', function() {
     let db;
 
+    const linksArray = makeLinksArray()
+
+    function makeAuthHeader(user) {
+        const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        return `Bearer ${token}`
+    }
+
+    function makeJWTAuthHeader() {
+        return `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
+    }
+
     before('make knex instance', () => {
         console.log(TEST_DATABASE_URL, 'test db url');
         db = knex({
@@ -21,45 +32,27 @@ describe('Link Endpoints', function() {
 
     before(() => db.raw('BEGIN; ALTER TABLE links DISABLE TRIGGER ALL; TRUNCATE TABLE links CASCADE; ALTER TABLE links ENABLE TRIGGER ALL; COMMIT;'))
 
-    // describe(`GET /api/link`, () => {
-    //     context(`Given no links`, () => {
-    //         it(`responds with 200 and an empty list`, () => {
-    //             return supertest(app)
-    //                 .get('/api/link')
-    //                 .expect(200, [])
-    //         })
-    //     })
-
-    //     context(`Given there are links in the database`, () => {
-    //         const testLinks = makeLinksArray()
-
-    //         beforeEach('insert links', () => {
-    //             return db
-    //                 .into('links')
-    //                 .insert(testLinks)
-    //         })
-
-    //         it('responds with 200 and all of the links', () => {
-    //             return supertest(app)
-    //                 .get('/api/links')
-    //                 .expect(200)
-    //                 // .expect(res => {
-    //                 //     expect(res.body.length === testLineups.length)
-    //                 // })
-    //         })
-    //     })
-    // })
-
-    // describe(`GET /api/link/:id`, () => {
-    //     context(`Given no link`, () => {
-    //         it(`responds with 404`, () => {
-    //             const linkId = 123456
-    //             return supertest(app)
-    //                 .get(`/api/link/${linkId}`)
-    //                 .expect(404, { error: { 'message': 'Link doesn\'t exist' } })
-    //         })
-    //     })
-    // })
+    describe(`GET /api/link`, () => {
+    it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
+        return supertest(app)
+            .get(`/api/link`)
+            .expect(401, { error: `Missing bearer token` })
+    })
+    it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
+        const userNoCreds = { email: '', pw: '' }
+        return supertest(app)
+            .get(`/api/link/123`)
+            .set('Authorization', makeAuthHeader(userNoCreds))
+            .expect(401, { error: `Unauthorized request` })
+    })
+    it(`responds 401 'Unauthorized request' when invalid user`, () => {
+        const userInvalidCreds = { email: 'user-not', pw: 'existy' }
+        return supertest(app)
+            .get(`/api/link/1`)
+            .set('Authorization', makeAuthHeader(userInvalidCreds))
+            .expect(401, { error: `Unauthorized request` })
+    })
+})
 
     describe(`POST /`, () => {
         it(`creates a link, responding with 201 and the new link`, () => {
@@ -69,6 +62,7 @@ describe('Link Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/link')
+                .set('Authorization', makeJWTAuthHeader())
                 .send(newLink)
                 .expect(201)
                 .expect(res => {

@@ -40,11 +40,11 @@ comedianRouter
         const knex = req.app.get('db')
         ComedianService.getAllComedians(knex)
             .then(comedians => {
-                if(!comedians) {
-                    return res.status(404).json({
-                        error: { message: `Comedian doesn't exist` }
-                    })
-                }
+                // if(!comedians) {
+                //     return res.status(404).json({
+                //         error: { message: `Comedian doesn't exist` }
+                //     })
+                // }
                 res.json(comedians.map(serializeComedian))
             })
             .catch(next)
@@ -125,21 +125,5 @@ comedianRouter
         })
         .catch(next)
     })
-
-//TODO write get by query option
-
-// comedianRouter
-//     .get('/species/:species', (req, res, next) => {
-//         const knex = req.app.get('db')
-//         const species = req.params.species
-//         SightingsService.getBySpecies(
-//             knex,
-//             species
-//         )
-//         .then(sightings => {
-//             res.json(sightings.map(serializeSighting))
-//         })
-//         .catch(next)
-//     })
 
 module.exports = comedianRouter;
