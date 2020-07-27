@@ -36,7 +36,7 @@ describe('Link Endpoints', function() {
     it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
         return supertest(app)
             .get(`/api/link`)
-            .expect(401, { error: `Missing bearer token` })
+            .expect(401, { error: `Unauthorized request` })
     })
     it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
         const userNoCreds = { email: '', pw: '' }

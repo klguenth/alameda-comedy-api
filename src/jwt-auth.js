@@ -3,15 +3,15 @@ const AuthService = require('./auth-service');
 function requireAuth(req, res, next) {
     const authToken = req.get('Authorization') || ''
 
-    let bearerToken
-    if (!authToken.toLowerCase().startsWith('bearer ')) {
-        return res.status(401).json({ error: 'Missing bearer token' })
+    let basicToken
+    if (!authToken.toLowerCase().startsWith('basic ')) {
+        return res.status(401).json({ error: 'Missing basic token' })
     } else {
-        bearerToken = authToken.slice(7, authToken.length)
+        basicToken = authToken.slice(7, authToken.length)
     }
 
     const [tokenUserName, tokenPassword] = Buffer
-        .from(bearerToken, 'base64')
+        .from(basicToken, 'base64')
         .toString()
         .split(':')
 

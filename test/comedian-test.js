@@ -14,9 +14,13 @@ describe('Comedian Endpoints', function() {
     
     const testComedians = makeComediansArray()
     const testUsers = makeUsersArray()
+    const user = {
+        email: 'klguenth@gmail.com',
+        pw: 'Password1!'
+    }
 
     function makeAuthHeader(user) {
-        const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        const token = Buffer.from(`${this.user.email}:${this.user.pw}`).toString('base64')
         return `Bearer ${token}`
     }
 
@@ -38,10 +42,10 @@ describe('Comedian Endpoints', function() {
     before(() => db.raw('BEGIN; ALTER TABLE comedian DISABLE TRIGGER ALL; TRUNCATE TABLE comedian CASCADE; ALTER TABLE comedian ENABLE TRIGGER ALL; COMMIT;'))
 
     describe(`GET /api/comedian`, () => {
-        it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
+        it(`responds with 401 'Missing basic token' when no bearer token`, () => {
             return supertest(app)
                 .get(`/api/comedian`)
-                .expect(401, { error: `Missing bearer token` })
+                .expect(401, { error: `Missing basic token` })
         })
         it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
             const userNoCreds = { email: '', pw: '' }
@@ -65,7 +69,7 @@ describe('Comedian Endpoints', function() {
                 return supertest(app)
                     .get('/api/comedian')
                     .set('Authorization', makeJWTAuthHeader())
-                    .set('Authorization', makeAuthHeader())
+                    .set('Authorization', makeAuthHeader(testUsers[0]))
                     .expect(200, [])
             })
         })
@@ -159,6 +163,7 @@ describe('Comedian Endpoints', function() {
                     supertest(app)
                         .get(`/api/comedian/${res.body.id}`)
                         .set('Authorization', makeJWTAuthHeader())
+                        .set('Authorization', makeAuthHeader(user))
                         .expect(res.body)
                 )
         })
