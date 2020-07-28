@@ -7,6 +7,7 @@ const knex = require('knex');
 const express = require('express');
 const bcrypt = require('bcrypt');
 const { makeComediansArray, makeUsersArray } = require('./test-helpers.js');
+const AuthService = require('../src/auth-service');
 const supertest = require('supertest');
 
 describe('Comedian Endpoints', function() {
@@ -22,10 +23,6 @@ describe('Comedian Endpoints', function() {
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
         return `Basic ${token}`
-    }
-
-    function makeJWTAuthHeader() {
-        return `Basic eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
     }
 
     before('make knex instance', () => {
@@ -64,10 +61,13 @@ describe('Comedian Endpoints', function() {
 
     describe(`GET /api/comedian`, () => {
         context(`Given no comedians`, () => {
+            beforeEach(() =>
+                db.into('users').insert(testUsers)
+            )
             it(`responds with 200 and an empty list`, () => {
                 return supertest(app)
                     .get('/api/comedian')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                     .expect(200, [])
             })
         })
