@@ -5,7 +5,7 @@ function requireAuth(req, res, next) {
 
     let basicToken
     if (!authToken.toLowerCase().startsWith('basic ')) {
-        return res.status(401).json({ error: 'Missing basic token' })
+        return res.status(401).json({ error: 'Unauthorized request' })
     } else {
         basicToken = authToken.slice(7, authToken.length)
     }

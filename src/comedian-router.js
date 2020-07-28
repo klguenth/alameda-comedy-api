@@ -52,6 +52,7 @@ comedianRouter
     //create new comedian
     .post('/', jsonBodyParser, requireAuth, (req, res, next) => {
         const newComedian = req.body
+        console.log('new comedian', newComedian);
         for (const [key, value] of Object.entries(newComedian))
             if (value == null)
                 return res.status(400).json({

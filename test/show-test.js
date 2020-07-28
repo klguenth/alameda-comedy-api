@@ -13,11 +13,11 @@ describe('Show Endpoints', function() {
 
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
-        return `Bearer ${token}`
+        return `Basic ${token}`
     }
 
     function makeJWTAuthHeader() {
-        return `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
+        return `Basic eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
     }
 
     before('make knex instance', () => {
@@ -60,8 +60,7 @@ describe('Show Endpoints', function() {
             it(`responds with 200 and an empty list`, () => {
                 return supertest(app)
                     .get('/api/show')
-                    .set('Authorization', makeJWTAuthHeader())
-                    .set('Authorization', makeAuthHeader())
+                    .set('Authorization', makeAuthHeader(testUsers[0]))
                     .expect(200, [])
             })
         })
@@ -78,8 +77,7 @@ describe('Show Endpoints', function() {
             it('responds with 200 and all of the shows', () => {
                 return supertest(app)
                     .get('/api/show')
-                    .set('Authorization', makeJWTAuthHeader())
-                    .set('Authorization', makeAuthHeader())
+                    .set('Authorization', makeAuthHeader(testUsers))
                     .expect(200)
                     .expect(res => {
                         expect(res.body.length === testShows.length)
@@ -94,8 +92,7 @@ describe('Show Endpoints', function() {
                 const showId = 123456
                 return supertest(app)
                     .get(`/api/show/${showId}`)
-                    .set('Authorization', makeJWTAuthHeader())
-                    .set('Authorization', makeAuthHeader())
+                    .set('Authorization', makeAuthHeader(testUsers))
                     .expect(404, { error: { 'message': 'Show doesn\'t exist' } })
             })
         })
@@ -117,8 +114,7 @@ describe('Show Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/show')
-                .set('Authorization', makeJWTAuthHeader())
-                .set('Authorization', makeAuthHeader())
+                .set('Authorization', makeAuthHeader(testUsers))
                 .send(newShow)
                 .expect(201)
                 .expect(res => {

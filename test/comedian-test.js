@@ -20,16 +20,15 @@ describe('Comedian Endpoints', function() {
     }
 
     function makeAuthHeader(user) {
-        const token = Buffer.from(`${this.user.email}:${this.user.pw}`).toString('base64')
-        return `Bearer ${token}`
+        const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        return `Basic ${token}`
     }
 
     function makeJWTAuthHeader() {
-        return `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
+        return `Basic eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE1OTU1NTc5NzMsInN1YiI6ImtsZ3VlbnRoQGdtYWlsLmNvbSJ9.pNZHVdmDjefdyJMWKrT4GoL2id9VtK7B_hkz8zUmsbU`;
     }
 
     before('make knex instance', () => {
-        console.log(TEST_DATABASE_URL, 'test db url');
         db = knex({
             client: 'pg',
             connection: TEST_DATABASE_URL,
@@ -68,7 +67,6 @@ describe('Comedian Endpoints', function() {
             it(`responds with 200 and an empty list`, () => {
                 return supertest(app)
                     .get('/api/comedian')
-                    .set('Authorization', makeJWTAuthHeader())
                     .set('Authorization', makeAuthHeader(testUsers[0]))
                     .expect(200, [])
             })
