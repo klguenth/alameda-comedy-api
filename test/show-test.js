@@ -3,6 +3,7 @@ const app = require('../src/app.js');
 const { expect } = require('chai');
 const { TEST_DATABASE_URL } = require('../src/config');
 const knex = require('knex');
+const helpers = require('./test-helpers');
 const { makeShowsArray, makeUsersArray } = require('./test-helpers.js')
 
 describe('Show Endpoints', function() {
@@ -77,7 +78,7 @@ describe('Show Endpoints', function() {
             it('responds with 200 and all of the shows', () => {
                 return supertest(app)
                     .get('/api/show')
-                    .set('Authorization', makeAuthHeader(testUsers))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
                     .expect(200)
                     .expect(res => {
                         expect(res.body.length === testShows.length)
@@ -92,7 +93,7 @@ describe('Show Endpoints', function() {
                 const showId = 123456
                 return supertest(app)
                     .get(`/api/show/${showId}`)
-                    .set('Authorization', makeAuthHeader(testUsers))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
                     .expect(404, { error: { 'message': 'Show doesn\'t exist' } })
             })
         })
@@ -114,7 +115,7 @@ describe('Show Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/show')
-                .set('Authorization', makeAuthHeader(testUsers))
+                .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
                 .send(newShow)
                 .expect(201)
                 .expect(res => {
@@ -151,8 +152,7 @@ describe('Show Endpoints', function() {
                     if (value == null)
                 return supertest(app)
                     .post('/api/show')
-                    .set('Authorization', makeJWTAuthHeader())
-                    .set('Authorization', makeAuthHeader())
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
                     .send(newShow)
                     .expect(400, {
                         error: { message: `Missing '${key}' in request body` }
