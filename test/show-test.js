@@ -34,24 +34,24 @@ describe('Show Endpoints', function() {
     before(() => db.raw('BEGIN; ALTER TABLE show DISABLE TRIGGER ALL; TRUNCATE TABLE show CASCADE; ALTER TABLE show ENABLE TRIGGER ALL; COMMIT;'))
 
     describe(`GET /api/show`, () => {
-        it(`responds with 401 'Missing basic token' when no bearer token`, () => {
+        it(`responds with 401 'Missing Bearer token' when no bearer token`, () => {
             return supertest(app)
                 .get(`/api/show`)
-                .expect(401, { error: `Unauthorized request` })
+                .expect(401, { error: `Missing Bearer token` })
         })
-        it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
+        it(`responds 401 'Missing Bearer token' when no credentials`, () => {
             const userNoCreds = { email: '', pw: '' }
             return supertest(app)
                 .get(`/api/show/123`)
                 .set('Authorization', makeAuthHeader(userNoCreds))
-                .expect(401, { error: `Unauthorized request` })
+                .expect(401, { error: `Missing Bearer token` })
         })
         it(`responds 401 'Unauthorized request' when invalid user`, () => {
             const userInvalidCreds = { email: 'user-not', pw: 'existy' }
             return supertest(app)
                 .get(`/api/show/1`)
                 .set('Authorization', makeAuthHeader(userInvalidCreds))
-                .expect(401, { error: `Unauthorized request` })
+                .expect(401, { error: `Missing Bearer token` })
         })
     })
 
@@ -78,7 +78,7 @@ describe('Show Endpoints', function() {
             it('responds with 200 and all of the shows', () => {
                 return supertest(app)
                     .get('/api/show')
-                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                     .expect(200)
                     .expect(res => {
                         expect(res.body.length === testShows.length)
@@ -93,7 +93,7 @@ describe('Show Endpoints', function() {
                 const showId = 123456
                 return supertest(app)
                     .get(`/api/show/${showId}`)
-                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                     .expect(404, { error: { 'message': 'Show doesn\'t exist' } })
             })
         })
@@ -115,7 +115,7 @@ describe('Show Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/show')
-                .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
+                .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                 .send(newShow)
                 .expect(201)
                 .expect(res => {
@@ -152,7 +152,8 @@ describe('Show Endpoints', function() {
                     if (value == null)
                 return supertest(app)
                     .post('/api/show')
-                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers))
+                    .set('Authorization', makeJWTAuthHeader())
+                    .set('Authorization', makeAuthHeader())
                     .send(newShow)
                     .expect(400, {
                         error: { message: `Missing '${key}' in request body` }

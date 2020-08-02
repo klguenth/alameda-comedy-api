@@ -22,6 +22,7 @@ describe('Comedian Endpoints', function() {
 
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
+        console.log('token line 25', token);
         return `Basic ${token}`
     }
 
@@ -38,24 +39,24 @@ describe('Comedian Endpoints', function() {
     before(() => db.raw('BEGIN; ALTER TABLE comedian DISABLE TRIGGER ALL; TRUNCATE TABLE comedian CASCADE; ALTER TABLE comedian ENABLE TRIGGER ALL; COMMIT;'))
 
     describe(`GET /api/comedian`, () => {
-        it(`responds with 401 'Missing basic token' when no bearer token`, () => {
+        it(`responds with 401 'Missing Bearer token' when no bearer token`, () => {
             return supertest(app)
                 .get(`/api/comedian`)
-                .expect(401, { error: `Missing basic token` })
+                .expect(401, { error: `Missing Bearer token` })
         })
         it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
             const userNoCreds = { email: '', pw: '' }
             return supertest(app)
                 .get(`/api/comedian/123`)
                 .set('Authorization', makeAuthHeader(userNoCreds))
-                .expect(401, { error: `Unauthorized request` })
+                .expect(401, { error: `Missing Bearer token` })
         })
         it(`responds 401 'Unauthorized request' when invalid user`, () => {
             const userInvalidCreds = { email: 'user-not', pw: 'existy' }
             return supertest(app)
                 .get(`/api/comedian/1`)
                 .set('Authorization', makeAuthHeader(userInvalidCreds))
-                .expect(401, { error: `Unauthorized request` })
+                .expect(401, { error: `Missing Bearer token` })
         })
     })
 
@@ -160,7 +161,7 @@ describe('Comedian Endpoints', function() {
                 .then(res => 
                     supertest(app)
                         .get(`/api/comedian/${res.body.id}`)
-                        .set('Authorization', makeJWTAuthHeader())
+                        .set('Authorization', helpers.makeJWTAuthHeader(testComedians))
                         .set('Authorization', makeAuthHeader(user))
                         .expect(res.body)
                 )

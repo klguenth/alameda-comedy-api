@@ -18,7 +18,6 @@ describe('Lineup Endpoints', function() {
     }
 
     before('make knex instance', () => {
-        console.log(TEST_DATABASE_URL, 'test db url');
         db = knex({
             client: 'pg',
             connection: TEST_DATABASE_URL,
@@ -29,28 +28,6 @@ describe('Lineup Endpoints', function() {
     after('disconnect from db', () => db.destroy())
 
     before(() => db.raw('BEGIN; ALTER TABLE lineup DISABLE TRIGGER ALL; TRUNCATE TABLE lineup CASCADE; ALTER TABLE lineup ENABLE TRIGGER ALL; COMMIT;'))
-
-    describe(`GET /api/lineup`, () => {
-        it(`responds with 401 'Missing bearer token' when no bearer token`, () => {
-            return supertest(app)
-                .get(`/api/lineup`)
-                .expect(401, { error: `Missing bearer token` })
-        })
-        it(`responds 401 'Unauthorized request' when no credentials in token`, () => {
-            const userNoCreds = { email: '', pw: '' }
-            return supertest(app)
-                .get(`/api/lineup/123`)
-                .set('Authorization', makeAuthHeader(userNoCreds))
-                .expect(401, { error: `Unauthorized request` })
-        })
-        it(`responds 401 'Unauthorized request' when invalid user`, () => {
-            const userInvalidCreds = { email: 'user-not', pw: 'existy' }
-            return supertest(app)
-                .get(`/api/lineup/1`)
-                .set('Authorization', makeAuthHeader(userInvalidCreds))
-                .expect(401, { error: `Unauthorized request` })
-        })
-    })
 
     describe(`POST /`, () => {
     context(`Given there are lineups in the database`, () => {
@@ -80,8 +57,6 @@ describe('Lineup Endpoints', function() {
                     })
                 })
                 .then(() => {
-                    console.log(comedianIds);
-                    console.log(showIds);
                     testLineups[0].comedian_id = comedianIds[0];
                     testLineups[1].comedian_id = comedianIds[1];
                     testLineups[0].show_id = showIds[0];
