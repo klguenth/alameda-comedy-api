@@ -22,7 +22,6 @@ describe('Comedian Endpoints', function() {
 
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
-        console.log('token line 25', token);
         return `Basic ${token}`
     }
 
@@ -75,6 +74,10 @@ describe('Comedian Endpoints', function() {
 
         context(`Given there are comedians in the database`, () => {
             const testComedians = makeComediansArray()
+            const user = {
+                email: 'klguenth@gmail.com',
+                pw: 'Password1!'
+            }
 
             beforeEach('insert comedians', () => {
                 return db
@@ -85,7 +88,7 @@ describe('Comedian Endpoints', function() {
             it('responds with 200 and all of the comedians', () => {
                 return supertest(app)
                     .get('/api/comedian')
-                    .set('Authorization', makeAuthHeader(testComedians))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                     .expect(200)
             })
         })
@@ -100,7 +103,7 @@ describe('Comedian Endpoints', function() {
                 const comedianId = 123456
                 return supertest(app)
                     .get(`/api/comedian/${comedianId}`)
-                    .set('Authorization', makeAuthHeader(testComedians[0]))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                     .expect(404, { error: { 'message': 'Comedian doesn\'t exist' } })
             })
         })
@@ -161,8 +164,7 @@ describe('Comedian Endpoints', function() {
                 .then(res => 
                     supertest(app)
                         .get(`/api/comedian/${res.body.id}`)
-                        .set('Authorization', helpers.makeJWTAuthHeader(testComedians))
-                        .set('Authorization', makeAuthHeader(user))
+                        .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                         .expect(res.body)
                 )
         })

@@ -61,7 +61,7 @@ describe('Show Endpoints', function() {
             it(`responds with 200 and an empty list`, () => {
                 return supertest(app)
                     .get('/api/show')
-                    .set('Authorization', makeAuthHeader(testUsers[0]))
+                    .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                     .expect(200, [])
             })
         })
