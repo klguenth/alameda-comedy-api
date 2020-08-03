@@ -136,6 +136,7 @@ describe('Comedian Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/comedian')
+                .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                 .send(newComedian)
                 .expect(201)
                 .expect(res => {
@@ -164,7 +165,6 @@ describe('Comedian Endpoints', function() {
                 .then(res => 
                     supertest(app)
                         .get(`/api/comedian/${res.body.id}`)
-                        .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                         .expect(res.body)
                 )
         })
