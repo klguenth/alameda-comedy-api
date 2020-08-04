@@ -3,6 +3,7 @@ const app = require('../src/app.js');
 const { expect } = require('chai');
 const { TEST_DATABASE_URL } = require('../src/config');
 const knex = require('knex');
+const helpers = require('./test-helpers');
 const { makeLineupsArray, makeShowsArray, makeComediansArray } = require('./test-helpers.js')
 
 describe('Lineup Endpoints', function() {
@@ -11,6 +12,10 @@ describe('Lineup Endpoints', function() {
     const testLineups = makeLineupsArray()
     const testShows = makeShowsArray()
     const testComedians = makeComediansArray()
+    const user = {
+        email: 'klguenth@gmail.com',
+        pw: 'Password1!'
+    }
 
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
@@ -71,7 +76,7 @@ describe('Lineup Endpoints', function() {
             const newLineup = testLineups[0];
             return supertest(app)
                 .post('/api/lineup')
-                .set('Authorization', makeAuthHeader(newLineup))
+                .set('Authorization', helpers.makeJWTAuthHeader(user))
                 .send(newLineup)
                 .expect(201)
                 .expect(res => {

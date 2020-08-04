@@ -3,6 +3,7 @@ const app = require('../src/app.js');
 const { expect } = require('chai');
 const { TEST_DATABASE_URL } = require('../src/config');
 const knex = require('knex');
+const helpers = require('./test-helpers');
 const { makeLinksArray, makeUsersArray } = require('./test-helpers.js')
 
 describe('Link Endpoints', function() {
@@ -10,6 +11,10 @@ describe('Link Endpoints', function() {
 
     const linksArray = makeLinksArray()
     const testUsers = makeUsersArray()
+    const user = {
+        email: 'klguenth@gmail.com',
+        pw: 'Password1!'
+    }
 
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
@@ -40,7 +45,7 @@ describe('Link Endpoints', function() {
             }
             return supertest(app)
                 .post('/api/link')
-                .set('Authorization', makeJWTAuthHeader(testUsers[0]))
+                .set('Authorization', helpers.makeJWTAuthHeader(user))
                 .send(newLink)
                 .expect(201)
                 .expect(res => {
@@ -50,6 +55,7 @@ describe('Link Endpoints', function() {
                 .then(res => 
                     supertest(app)
                         .get(`/api/link/${res.body.id}`)
+                        .set('Authorization', helpers.makeJWTAuthHeader(user))
                         .expect(res.body)
                 )
         })

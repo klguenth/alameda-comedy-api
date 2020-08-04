@@ -277,7 +277,6 @@ function makeUsersArray() {
       subject: user.email,
       algorithm: 'HS256',
     })
-    console.log('DEBUG JWTAuthHeader token', token);
     return `Bearer ${token}`
   }
   

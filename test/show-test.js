@@ -11,6 +11,10 @@ describe('Show Endpoints', function() {
 
     const testShows = makeShowsArray()
     const testUsers = makeUsersArray()
+    const user = {
+        email: 'klguenth@gmail.com',
+        pw: 'Password1!'
+    }
 
     function makeAuthHeader(user) {
         const token = Buffer.from(`${user.email}:${user.pw}`).toString('base64')
@@ -133,6 +137,7 @@ describe('Show Endpoints', function() {
                 .then(res => 
                     supertest(app)
                         .get(`/api/show/${res.body.id}`)
+                        .set('Authorization', helpers.makeJWTAuthHeader(testUsers[0]))
                         .expect(res.body)
                 )
         })
