@@ -87,7 +87,7 @@ showRouter
     //edit existing show
     .patch('/:id', jsonBodyParser, requireAuth, (req, res, next) => {
         const { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, comic_one, comic_two, comic_three, comic_four, comic_five, comic_six } = req.body
-        const showToUpdate = { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, omic_one, comic_two, comic_three, comic_four, comic_five, comic_six }
+        const showToUpdate = { title, show_date, show_time, comics, details, notes, price_premium, price_general, capacity, comps, tix_id, comic_one, comic_two, comic_three, comic_four, comic_five, comic_six }
 
         const numberOfValues = Object.values(showToUpdate).filter(Boolean).length
         if (numberOfValues === 0)
