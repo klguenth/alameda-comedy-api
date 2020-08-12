@@ -209,12 +209,6 @@ function makeUsersArray() {
       }))
       return db.into('users').insert(preppedUsers)
         .then(() => {})
-          /*// update the auto sequence to stay in sync
-          db.raw(
-            `SELECT setval('user_id', ?)`,
-            users.length,
-          )
-        )*/
     }
   
   function cleanTables(db) {

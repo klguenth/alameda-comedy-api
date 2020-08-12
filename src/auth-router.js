@@ -38,7 +38,6 @@ authRouter
                     const sub = dbUser.email
                     const payload = { user_id: dbUser.id }
                     let token = AuthService.createJwt(sub, payload)
-                    console.log('token', token);
                     return res.status(200).json({
                         authToken: token
                     })
