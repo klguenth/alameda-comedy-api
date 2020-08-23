@@ -1,6 +1,7 @@
 require('dotenv').config();
+const Postgrator = require('postgrator')
 
-module.exports = {
+const postgrator = new Postgrator({
     "migrationsDirectory": "migrations",
     "driver": "pg",
     "connectionString": (process.env.NODE_ENV === 'test')
@@ -12,5 +13,16 @@ module.exports = {
         ? "alamedacomedy-test"
         : "alamedacomedy",
     "username": "alamedacomedy",
-    "password": "alamedacomedy"
-}
+    "password": "alamedacomedy",
+    "schemaTable": "alameda.comedyschema"
+})
+
+postgrator
+    .migrate('003')
+    .then((appliedMigrations) => console.log(appliedMigrations))
+    .catch((error) => {
+        console.log(error)
+        // Because migrations prior to the migration with error would have run
+        // error object is decorated with appliedMigrations
+        console.log(error.appliedMigrations) // array of migration objects
+    })
